@@ -79,3 +79,26 @@ export const check = async (req, res) => {
   const user = await users.findOne({ email: req.user.email });
   res.send({ success: true, user });
 };
+
+export const updatePassword = async (req, res) => {
+  const user = await users.findOne({ email: req.user.email });
+  const { currentPassword, newPassword } = req.body;
+
+  const isCurrentPasswordCorrect = await bcrypt.compare(
+    currentPassword,
+    user.password
+  );
+
+  if (!isCurrentPasswordCorrect) {
+    return res.send({ message: "Wrong Password" });
+  }
+
+  const newHashedPassword = await bcrypt.hash(newPassword, 10);
+
+  const passwordUpdate = await users.updateOne(
+    { email: req.user.email },
+    { $set: { password: newHashedPassword } }
+  );
+
+  res.status(200).send({ success: true });
+};
