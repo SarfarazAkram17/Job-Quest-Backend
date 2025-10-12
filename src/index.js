@@ -8,6 +8,8 @@ const port = 5000;
 
 import authRouter from "./routes/auth.route.js";
 import userRouter from "./routes/users.route.js";
+import communityRouter from "./routes/community.route.js";
+import reviewsRouter from "./routes/reviews.route.js";
 
 app.use(
   cors({
@@ -22,6 +24,8 @@ async function startServer() {
   try {
     app.use("/auth", authRouter);
     app.use("/users", userRouter);
+    app.use("/community", communityRouter);
+    app.use("/reviews", reviewsRouter);
 
     app.get("/", (req, res) => {
       res.send("Server is running");

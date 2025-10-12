@@ -10,7 +10,7 @@ export const signup = async (req, res) => {
 
   const userExists = await users.findOne({ email });
   if (userExists) {
-    return res.send({ message: "Email already in use" });
+    return res.status(409).send({ message: "Email already in use" });
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -29,6 +29,7 @@ export const signup = async (req, res) => {
     expiresIn: "1d",
   });
 
+  // Set HTTP-only cookie
   res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -36,19 +37,24 @@ export const signup = async (req, res) => {
     maxAge: 24 * 60 * 60 * 1000,
   });
 
-  res.status(201).send({ success: true, user });
+  // Also send token in response body for frontend
+  res.status(201).send({
+    success: true,
+    user,
+    token, // Add this line
+  });
 };
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await users.findOne({ email });
   if (!user) {
-    return res.send({ message: "Invalid credentials" });
+    return res.status(401).send({ message: "Invalid credentials" });
   }
 
   const isPasswordCorrect = await bcrypt.compare(password, user.password);
   if (!isPasswordCorrect) {
-    return res.send({ message: "Invalid credentials" });
+    return res.status(401).send({ message: "Invalid credentials" });
   }
 
   const payload = { email, role: user.role };
@@ -56,6 +62,7 @@ export const login = async (req, res) => {
     expiresIn: "1d",
   });
 
+  // Set HTTP-only cookie
   res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -63,7 +70,12 @@ export const login = async (req, res) => {
     maxAge: 24 * 60 * 60 * 1000,
   });
 
-  res.status(200).send({ success: true, user });
+  // Also send token in response body for frontend
+  res.status(200).send({
+    success: true,
+    user,
+    token, // Add this line
+  });
 };
 
 export const logout = (req, res) => {
