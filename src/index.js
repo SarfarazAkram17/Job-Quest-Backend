@@ -1,0 +1,39 @@
+import express from "express";
+import cors from "cors";
+import "dotenv/config";
+import cookieParser from "cookie-parser";
+
+const app = express();
+const port = 5000;
+
+import authRouter from "./routes/auth.route.js";
+import userRouter from "./routes/users.route.js";
+
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    credentials: true,
+  })
+);
+app.use(express.json());
+app.use(cookieParser());
+
+async function startServer() {
+  try {
+    app.use("/auth", authRouter);
+    app.use("/users", userRouter);
+
+    app.get("/", (req, res) => {
+      res.send("Server is running");
+    });
+
+    app.listen(port, () => {
+      console.log(`server is running on port ${port}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+}
+
+startServer();
