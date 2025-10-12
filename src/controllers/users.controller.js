@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import connectDB from "../config/db.js";
 
 const { users } = await connectDB();
@@ -63,3 +64,14 @@ export const getAllUsers = async (req, res) => {
 //     });
 //   }
 // };
+
+export const deleteUser = async (req, res) => {
+  try {
+    const deleteUser = await users.deleteOne({
+      _id: new ObjectId(req.params.id),
+    });
+    res.status(200).send({ success: true });
+  } catch (err) {
+    res.status(500).send({ message: "Server error", error: err.message });
+  }
+};
