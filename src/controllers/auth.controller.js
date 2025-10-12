@@ -35,13 +35,13 @@ export const signup = async (req, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 24 * 60 * 60 * 1000,
+    path: '/'
   });
 
   // Also send token in response body for frontend
   res.status(201).send({
     success: true,
     user,
-    token, // Add this line
   });
 };
 
@@ -68,13 +68,13 @@ export const login = async (req, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 24 * 60 * 60 * 1000,
+    path: '/'
   });
 
   // Also send token in response body for frontend
   res.status(200).send({
     success: true,
     user,
-    token, // Add this line
   });
 };
 
