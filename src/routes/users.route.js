@@ -13,6 +13,6 @@ userRouter.get("/", verifyJwt, verifyAdmin, getAllUsers);
 
 // userRouter.patch("/", verifyJwt, updateProfile);
 
-userRouter.delete("/", verifyJwt, verifyAdmin, deleteUser);
+userRouter.delete("/:id", verifyJwt, verifyAdmin, deleteUser);
 
 export default userRouter;
