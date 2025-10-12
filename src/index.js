@@ -11,7 +11,7 @@ import userRouter from "./routes/users.route.js";
 
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000", "https://job-quest-frontend-lemon.vercel.app"],
     credentials: true,
   })
 );
