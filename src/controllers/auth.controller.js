@@ -33,9 +33,9 @@ export const signup = async (req, res) => {
   res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    sameSite: "none",
     maxAge: 24 * 60 * 60 * 1000,
-    path: '/'
+    path: "/",
   });
 
   // Also send token in response body for frontend
@@ -66,9 +66,9 @@ export const login = async (req, res) => {
   res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    sameSite: "none",
     maxAge: 24 * 60 * 60 * 1000,
-    path: '/'
+    path: "/",
   });
 
   // Also send token in response body for frontend
@@ -82,7 +82,7 @@ export const logout = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    sameSite: "none",
   });
   res.status(200).send({ success: true });
 };
