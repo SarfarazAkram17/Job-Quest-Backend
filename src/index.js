@@ -13,7 +13,7 @@ import reviewsRouter from "./routes/reviews.route.js";
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://job-quest-frontend-lemon.vercel.app"],
+    origin: ["http://localhost:3000", "https://job-quest-frontend-lemon.vercel.app", "https://job-quest-frontend-phi.vercel.app"],
     credentials: true,
   })
 );
