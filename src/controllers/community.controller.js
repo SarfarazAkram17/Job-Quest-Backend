@@ -115,7 +115,7 @@ export const updateCommunityPostStatus = async (req, res) => {
   }
 };
 
-export const deleteCommunityPostStatus = async (req, res) => {
+export const deleteCommunityPost = async (req, res) => {
   try {
     await community.deleteOne({ _id: new ObjectId(req.params.id) });
 
