@@ -9,7 +9,7 @@ communityRouter.get("/", getApprovedCommunityPost);
 communityRouter.get("/all", verifyJwt, verifyAdmin, getAllCommunityPost);
 communityRouter.post("/", verifyJwt, createCommunityPost);
 communityRouter.patch("/:id/status", verifyJwt, verifyAdmin, updateCommunityPostStatus);
-communityRouter.patch("/:id/react", verifyJwt, giveReaction);
+communityRouter.patch("/:id/react", giveReaction);
 communityRouter.delete("/:id", verifyJwt, verifyAdmin, deleteCommunityPost);
 
 export default communityRouter;
