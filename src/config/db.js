@@ -32,6 +32,7 @@ export default async function connectDB() {
       users: db.collection("users"),
       jobs: db.collection("jobs"),
       reviews: db.collection("reviews"),
+      subscriptions: db.collection("subscriptions"),
       community: db.collection("community"),
       appliedJobs: db.collection("appliedJobs"),
     };

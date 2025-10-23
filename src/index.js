@@ -10,8 +10,8 @@ import authRouter from "./routes/auth.route.js";
 import userRouter from "./routes/users.route.js";
 import communityRouter from "./routes/community.route.js";
 import reviewsRouter from "./routes/reviews.route.js";
-import resumeRouter from "./routes/resume.route.js"; // ✅ FIXED: Import from resume.route.js
-
+import resumeRouter from "./routes/resume.route.js";
+import subscriptionRouter from "./routes/subscriptions.route.js";
 app.use(
   cors({
     origin: [
@@ -31,7 +31,8 @@ async function startServer() {
     app.use("/users", userRouter);
     app.use("/community", communityRouter);
     app.use("/reviews", reviewsRouter);
-    app.use("/resume", resumeRouter); // ✅ This will now work correctly
+    app.use("/resume", resumeRouter);
+    app.use("/subscriptions", subscriptionRouter);
 
     app.get("/", (req, res) => {
       res.send("Server is running");

@@ -47,10 +47,6 @@ const upload = multer({
 // ==============================
 router.post("/upload", verifyJwt,  upload.single("resume"), async (req, res) => {
   try {
-    console.log("Upload endpoint hit");
-    console.log("User:", req.user?.email);
-    console.log("File:", req.file?.originalname);
-
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -83,8 +79,6 @@ router.post("/upload", verifyJwt,  upload.single("resume"), async (req, res) => 
       uploadStream.on("error", reject);
     });
 
-    console.log("File uploaded successfully:", uploadStream.id);
-
     res.status(200).json({
       success: true,
       message: "Resume uploaded successfully",
@@ -98,7 +92,6 @@ router.post("/upload", verifyJwt,  upload.single("resume"), async (req, res) => 
       },
     });
   } catch (error) {
-    console.error("Upload error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to upload resume",
@@ -113,7 +106,6 @@ router.post("/upload", verifyJwt,  upload.single("resume"), async (req, res) => 
 // ==============================
 router.get("/", verifyJwt,  async (req, res) => {
   try {
-    console.log("Fetching resumes for:", req.user.email);
     const db = await getDatabase();
     
     const files = await db
@@ -121,14 +113,11 @@ router.get("/", verifyJwt,  async (req, res) => {
       .find({ "metadata.email": req.user.email })
       .toArray();
 
-    console.log(`Found ${files.length} resumes`);
-
     res.json({
       success: true,
       data: files,
     });
   } catch (error) {
-    console.error("Fetch resumes error:", error);
     res.status(500).json({ 
       success: false, 
       message: "Failed to fetch resumes.",
@@ -143,7 +132,6 @@ router.get("/", verifyJwt,  async (req, res) => {
 // ==============================
 router.get("/view/:id", verifyJwt,  async (req, res) => {
   try {
-    console.log("Viewing resume:", req.params.id);
     const db = await getDatabase();
     const bucket = await initializeGridFS();
     const fileId = new ObjectId(req.params.id);
@@ -171,7 +159,6 @@ router.get("/view/:id", verifyJwt,  async (req, res) => {
     const downloadStream = bucket.openDownloadStream(fileId);
     
     downloadStream.on("error", (error) => {
-      console.error("Stream error:", error);
       if (!res.headersSent) {
         res.status(404).json({ success: false, message: "File not found" });
       }
@@ -179,7 +166,6 @@ router.get("/view/:id", verifyJwt,  async (req, res) => {
     
     downloadStream.pipe(res);
   } catch (error) {
-    console.error("View resume error:", error);
     if (!res.headersSent) {
       res.status(500).json({ 
         success: false, 
@@ -196,7 +182,6 @@ router.get("/view/:id", verifyJwt,  async (req, res) => {
 // ==============================
 router.get("/download/:id", verifyJwt,  async (req, res) => {
   try {
-    console.log("Downloading resume:", req.params.id);
     const db = await getDatabase();
     const bucket = await initializeGridFS();
     const fileId = new ObjectId(req.params.id);
@@ -224,7 +209,6 @@ router.get("/download/:id", verifyJwt,  async (req, res) => {
     const downloadStream = bucket.openDownloadStream(fileId);
     
     downloadStream.on("error", (error) => {
-      console.error("Download stream error:", error);
       if (!res.headersSent) {
         res.status(404).json({ success: false, message: "File not found" });
       }
@@ -232,7 +216,6 @@ router.get("/download/:id", verifyJwt,  async (req, res) => {
     
     downloadStream.pipe(res);
   } catch (error) {
-    console.error("Download resume error:", error);
     if (!res.headersSent) {
       res.status(500).json({ 
         success: false, 
@@ -249,7 +232,6 @@ router.get("/download/:id", verifyJwt,  async (req, res) => {
 // ==============================
 router.delete("/:id", verifyJwt,  async (req, res) => {
   try {
-    console.log("Deleting resume:", req.params.id);
     const db = await getDatabase();
     const bucket = await initializeGridFS();
     const fileId = new ObjectId(req.params.id);
@@ -272,7 +254,6 @@ router.delete("/:id", verifyJwt,  async (req, res) => {
       message: "Resume deleted successfully." 
     });
   } catch (error) {
-    console.error("Delete resume error:", error);
     res.status(500).json({ 
       success: false, 
       message: "Failed to delete resume.",
