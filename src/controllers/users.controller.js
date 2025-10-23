@@ -45,7 +45,6 @@ export const getCandidate = async (req, res) => {
   try {
     const query = { email: req.user.email };
     const me = await users.findOne(query);
-
     res.send(me);
   } catch (err) {
     res.status(500).send({ message: "Server error", error: err.message });
@@ -77,17 +76,17 @@ export const updateCandidateProfile = async (req, res) => {
     const updateDoc = { $set: {} };
 
     // Update all fields if provided (using $set to replace)
-    if (name !== undefined) updateDoc.$set.name = name;
-    if (phone !== undefined) updateDoc.$set.phone = phone;
-    if (address !== undefined) updateDoc.$set.address = address;
-    if (bio !== undefined) updateDoc.$set.bio = bio;
-    if (socialLinks !== undefined) updateDoc.$set.socialLinks = socialLinks;
-    if (profileImage !== undefined) updateDoc.$set.profileImage = profileImage;
+    if (name) updateDoc.$set.name = name;
+    if (phone) updateDoc.$set.phone = phone;
+    if (address) updateDoc.$set.address = address;
+    if (bio) updateDoc.$set.bio = bio;
+    if (socialLinks) updateDoc.$set.socialLinks = socialLinks;
+    if (profileImage) updateDoc.$set.profileImage = profileImage;
 
     // Replace entire arrays (this prevents duplicates)
-    if (education !== undefined) updateDoc.$set.education = education;
-    if (experience !== undefined) updateDoc.$set.experience = experience;
-    if (skills !== undefined) updateDoc.$set.skills = skills;
+    if (education) updateDoc.$set.education = education;
+    if (experience) updateDoc.$set.experience = experience;
+    if (skills) updateDoc.$set.skills = skills;
 
     // Remove $set if empty
     if (Object.keys(updateDoc.$set).length === 0) {
@@ -105,9 +104,6 @@ export const updateCandidateProfile = async (req, res) => {
         message: "User not found.",
       });
     }
-
-    // Fetch updated candidate data to return
-    const updatedCandidate = await users.findOne(query);
 
     res.send({
       success: true,
@@ -131,35 +127,3 @@ export const deleteUser = async (req, res) => {
     res.status(500).send({ message: "Server error", error: err.message });
   }
 };
-
-// export interface Candidate {
-//   name: string;
-//   phone?: string;
-//   profileImage?: string;
-//   address?: string;
-//   bio?: string;
-//   socialLinks?: SocialLinks;
-//   education: Education[];
-//   experience: Experience[];
-//   skills: string[];
-//   savedJobs: string[];
-// }
-
-// export interface Education {
-//   _id?: string;
-//   institution: string;
-//   degree: string;
-//   fieldOfStudy?: string;
-//   startDate: string;
-//   endDate: string;
-// }
-
-// export interface Experience {
-//   _id?: string;
-//   company: string;
-//   position: string;
-//   startDate: string;
-//   endDate?: string;
-//   isCurrentlyWorking?: boolean;
-//   responsibilities?: string;
-// }

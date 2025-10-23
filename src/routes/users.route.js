@@ -15,7 +15,7 @@ userRouter.get("/", verifyJwt, verifyAdmin, getAllUsers);
 
 userRouter.get("/candidate/me", verifyJwt, verifyCandidate, getCandidate);
 
-userRouter.patch("/candidate/:id", verifyJwt, verifyCandidate, updateCandidateProfile);
+userRouter.patch("/candidate", verifyJwt, verifyCandidate, updateCandidateProfile);
 
 // userRouter.patch("/employer/:id", verifyJwt, updateProfile);
 
