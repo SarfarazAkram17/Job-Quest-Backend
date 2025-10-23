@@ -4,6 +4,8 @@ import {
   getAllUsers,
   getCandidate,
   updateCandidateProfile,
+  updateAdminProfile,
+  getAdmin,
 } from "../controllers/users.controller.js";
 import { verifyJwt } from "../middleware/verifyJwt.middleware.js";
 import { verifyAdmin } from "../middleware/verifyAdmin.middleware.js";
@@ -17,7 +19,9 @@ userRouter.get("/candidate/me", verifyJwt, verifyCandidate, getCandidate);
 
 userRouter.patch("/candidate", verifyJwt, verifyCandidate, updateCandidateProfile);
 
-// userRouter.patch("/employer/:id", verifyJwt, updateProfile);
+userRouter.get("/admin/me", verifyJwt, verifyAdmin, getAdmin);
+
+userRouter.patch("/admin", verifyJwt, verifyAdmin, updateAdminProfile);
 
 userRouter.delete("/:id", verifyJwt, verifyAdmin, deleteUser);
 

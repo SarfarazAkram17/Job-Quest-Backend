@@ -73,10 +73,10 @@ export const updateCandidateProfile = async (req, res) => {
     }
 
     const query = { email };
-    
+
     // First, get the current user data
     const currentUser = await users.findOne(query);
-    
+
     if (!currentUser) {
       return res.status(404).send({
         success: false,
@@ -135,7 +135,72 @@ export const updateCandidateProfile = async (req, res) => {
 
     res.send({
       success: true,
-      message: "Profile updated successfully."
+      message: "Profile updated successfully.",
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const getAdmin = async (req, res) => {
+  try {
+    const query = { email: req.user.email };
+    const me = await users.findOne(query);
+    res.send(me);
+  } catch (err) {
+    res.status(500).send({ message: "Server error", error: err.message });
+  }
+};
+
+export const updateAdminProfile = async (req, res) => {
+  try {
+    const { name, phone, address, bio, socialLinks, profileImage } = req.body;
+    const { email } = req.user;
+
+    if (!email) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Email is required." });
+    }
+
+    const query = { email };
+
+    // First, get the current user data
+    const currentUser = await users.findOne(query);
+
+    if (!currentUser) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    const updateDoc = { $set: {} };
+
+    // Update basic fields if provided
+    if (name) updateDoc.$set.name = name;
+    if (phone) updateDoc.$set.phone = phone;
+    if (address) updateDoc.$set.address = address;
+    if (bio) updateDoc.$set.bio = bio;
+    if (socialLinks) updateDoc.$set.socialLinks = socialLinks;
+    if (profileImage) updateDoc.$set.profileImage = profileImage;
+
+    // Remove $set if empty
+    if (Object.keys(updateDoc.$set).length === 0) {
+      return res.status(400).send({
+        success: false,
+        message: "No data provided to update.",
+      });
+    }
+
+    const result = await users.updateOne(query, updateDoc);
+
+    res.send({
+      success: true,
+      message: "Profile updated successfully.",
     });
   } catch (error) {
     res.status(500).send({
