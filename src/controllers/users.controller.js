@@ -73,9 +73,20 @@ export const updateCandidateProfile = async (req, res) => {
     }
 
     const query = { email };
+    
+    // First, get the current user data
+    const currentUser = await users.findOne(query);
+    
+    if (!currentUser) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
     const updateDoc = { $set: {} };
 
-    // Update all fields if provided (using $set to replace)
+    // Update basic fields if provided
     if (name) updateDoc.$set.name = name;
     if (phone) updateDoc.$set.phone = phone;
     if (address) updateDoc.$set.address = address;
@@ -83,10 +94,34 @@ export const updateCandidateProfile = async (req, res) => {
     if (socialLinks) updateDoc.$set.socialLinks = socialLinks;
     if (profileImage) updateDoc.$set.profileImage = profileImage;
 
-    // Replace entire arrays (this prevents duplicates)
-    if (education) updateDoc.$set.education = education;
-    if (experience) updateDoc.$set.experience = experience;
-    if (skills) updateDoc.$set.skills = skills;
+    // Handle education
+    if (education) {
+      if (Array.isArray(education)) {
+        // Replace entire array
+        updateDoc.$set.education = education;
+      } else {
+        // Push single object to existing array or create new array
+        const currentEducation = currentUser.education || [];
+        updateDoc.$set.education = [...currentEducation, education];
+      }
+    }
+
+    // Handle experience
+    if (experience) {
+      if (Array.isArray(experience)) {
+        // Replace entire array
+        updateDoc.$set.experience = experience;
+      } else {
+        // Push single object to existing array or create new array
+        const currentExperience = currentUser.experience || [];
+        updateDoc.$set.experience = [...currentExperience, experience];
+      }
+    }
+
+    // Handle skills - always replace entire array
+    if (skills) {
+      updateDoc.$set.skills = skills;
+    }
 
     // Remove $set if empty
     if (Object.keys(updateDoc.$set).length === 0) {
@@ -98,16 +133,9 @@ export const updateCandidateProfile = async (req, res) => {
 
     const result = await users.updateOne(query, updateDoc);
 
-    if (result.matchedCount === 0) {
-      return res.status(404).send({
-        success: false,
-        message: "User not found.",
-      });
-    }
-
     res.send({
       success: true,
-      message: "Profile updated successfully.",
+      message: "Profile updated successfully."
     });
   } catch (error) {
     res.status(500).send({
